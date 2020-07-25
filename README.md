@@ -1,7 +1,7 @@
 # Kolture-Blog
 A simple Django Blogging App
 
-Features
+# Features
 
     User authorisation and registration
     Basic user permissions: admin, users.
@@ -12,7 +12,7 @@ Features
     Sort post by category.
     cdkeditor
   
-Main Requirements
+# Main Requirements
 
     python 3.5, 3.6, 3.7 or higher
     Django 2.1.8 or higher
