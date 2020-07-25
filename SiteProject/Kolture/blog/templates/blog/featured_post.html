@@ -1,0 +1,9 @@
+{% if post in post_draft %} 
+    <h2 class="card-title">{{ post.title }} <button class="btn btn-primary btn-sm disabled">Draft</button></h2>
+{% endif %}
+{% if post in published %}
+    <h2 class="card-title">{{ post.title }} <button class="btn btn-primary btn-sm disabled">Publish</button></h2>
+{% endif %}
+{% if post in is_featured %} 
+    <h2 class="card-title">{{ post.title }} <button class="btn btn-primary btn-sm disabled">Featured</button></h2>
+{% endif %}

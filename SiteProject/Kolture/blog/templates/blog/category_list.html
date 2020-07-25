@@ -1,0 +1,17 @@
+{% extends "blog/base.html" %} 
+{% block content %}
+<div class="col-md-8">
+    <h1 class="mt-4 font-italic border-bottom">
+        Blog Categories
+    </h1>
+    {% for item in cat_menu_list %}
+    <h5>
+        <a class="dropdown-item" href="{% url 'category' item %}">
+        {{ item|title }}
+        </a>
+    </h5>
+    {% endfor %}
+    <small><span>More Categories?</span><a href="{% url 'add_category' %}">Add New Category Here</a></small>
+
+</div>
+{% endblock %}

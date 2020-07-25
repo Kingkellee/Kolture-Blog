@@ -1,0 +1,29 @@
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+   {% if user.id == post.author.id %}
+      <div class="col-md-8">
+        <h1 class="mt-4 font-italic border-bottom">
+          Delete: {{ post.title }}
+        </h1>
+        <form action="" method="post">  
+            {% csrf_token %}
+            <strong>Are You sure You Want To Delete Post?</strong><br/><br/>
+            <button type="submit" class="btn btn-primary  btn-lg">Delete Post</button>
+        </form>
+      </div>
+    {% else %}
+    <div class="col-md-8">
+    You Must be Logged in as User to Delete this Post..
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="col-md-8">
+      You Must be Logged in to Delete this Post..
+    </div>
+    {% endif %}
+    {% endblock %}
+
+   

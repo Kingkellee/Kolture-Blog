@@ -1,0 +1,70 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+
+
+{% block content %}
+{% block categories_sidebar %}
+{% endblock categories_sidebar %}
+
+    <!-- Blog Entries Column -->
+      <div class="col-md-8">
+
+        <h1 class="my-4 font-italic border-bottom">
+          {{page_user}} Profile 
+        </h1>
+
+        <!-- profile image -->
+        <div class="profile-card mb-4">
+        {% if page_user.profile_pic %}
+          <img class="rounded-circle" src="{{ page_user.profile_pic.url }}" alt="{{post.author.username}} Image" height="100">
+        {% else %}
+            <img class="rounded-circle" src="{% static 'images/default.jpg' %}" alt="Default Image" height="100">
+        {% endif %}
+
+          <div class="profile-card-body bg-white">
+            <h4 class="author-name">
+            {{ page_user.user.first_name }} {{ page_user.user.last_name }}
+            </h4>
+            <h6 class="author-email">
+            {{ page_user.user.email }}
+            </h6>
+            <p>{{ page_user.bio }}</p>
+                        <ul class="s-content__author-social">
+                {% if page_user.website_url %}
+                <li><a href="{{ page_user.website_url }}">Website</a></li>
+                {% endif %}
+
+                {% if page_user.facebook_url %}
+                <li><a href="{{ page_user.facebook_url }}">Facebook</a></li>
+                {% endif %}
+
+                {% if page_user.twitter_url %}
+                <li><a href="{{ page_user.twitter_url }}">Twitter</a></li>
+                {% endif %}
+
+                {% if page_user.whatsapp_url %}
+                <li><a href="{{ page_user.whatsapp_url }}">Whatsapp</a></li>
+                {% endif %}
+
+                {% if page_user.instagram_url %}
+                <li><a href="{{ page_user.instagram_url }}">Instagram</a></li>
+                {% endif %}
+                
+            </ul>
+            <form>
+                <button class="btn btn-primary" formaction="{% url 'edit_profile_page' page_user.user.profile.id %}" display="inline">Update Profile</button>
+                <button class="btn btn-danger" formaction="{% url 'edit_profile' %}" display="inline">Settings</button>
+            </form>
+
+            <!-- <a href="{% url 'edit_profile_page' page_user.user.profile.id %}" class="btn btn-primary">Update Profile</a> -->
+          </div>
+          
+        </div>
+        
+    </div>
+
+
+
+ {% endblock %}
+   

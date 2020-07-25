@@ -1,0 +1,124 @@
+{% extends "blog/base.html" %}
+
+
+
+{% block content %}
+{% block categories_sidebar %}
+{% endblock categories_sidebar %}
+
+  <!-- Blog Entries Column -->
+<div class="col-md-8">
+
+  {% if featured_post %}
+  {% block feature_content %}
+
+  <!-- Blog Post -->
+  <h1 class="my-4 mb-4 font-italic border-bottom">
+    Featured Post
+  </h1> 
+  {% for post in featured_post %}
+  <div class="card mb-4">
+  {% if post.header_image %}  
+    <img class="card-img-top" src="{{ post.header_image.url }}" class="card-img img-responsive" height="250px">
+  {% endif %}
+    <div class="card-body">
+      <h2 class="card-title">{{ post.title }}</h2>
+      <p class="card-text">{{post.snippet}}</p>
+      <a href="{% url 'post-detail' post.slug  %}#" class="btn btn-primary">Read More &rarr;</a>
+    </div>
+    <div class="card-footer text-muted">
+      Posted on January 1, 2020 by
+      <a href="#">Start Bootstrap</a> Posted on {{ post.created_on}} by 
+      <a href="{% url 'profile_page' post.author.profile.id %}">{{ post.author.first_name }} {{ post.author.last_name }}</a>
+      <span class="entry__meta-links">
+        In <a href="{% url 'category' post.category %}">{{ post.category|title }}</a>
+      </span>
+    </div>
+  </div>
+  {% endfor %}
+    {% endblock feature_content %}
+    {% endif %}
+      <h1 class="my-4 mb-4 font-italic border-bottom">
+        Latest Post From Kolture
+      </h1>
+     
+        {% for post in post_list %}
+          {% if post.header_image %} 
+          <div class="card mb-4">
+              <div class="row no-gutters">
+                <div class="col-md-4">
+                  <img src="{{ post.header_image.url }}" class="card-img img-responsive" height="250px">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                      <h2 class="card-title">{{ post.title }}</h2>
+                      <p class="card-text">{{post.snippet}}</p>
+                      <a href="{% url 'post-detail' post.slug  %}" class="btn btn-primary">Read More &rarr;</a>
+                    </div>
+                    <div class="card-footer text-muted">
+                      Posted on {{ post.created_on}} by 
+                      <a href="{% url 'profile_page' post.author.profile.id %}">{{ post.author.first_name }} {{ post.author.last_name }}</a>
+                      <span class="entry__meta-links">
+                        In <a href="{% url 'category' post.category %}">{{ post.category|title }}</a>
+                      </span>
+                    </div>
+                    <p><small>
+                      {% if user.is_authenticated %}
+                        {% if user.id == post.author.id %}
+                          <a href="{% url 'post-detail' post.slug  %}">Comments: {{post.comments.count}}</a>-
+                            <a href="{% url 'update_post' post.slug  %}">Edit   </a>
+                            <a href="{% url 'delete_post' post.slug  %}">Delete</a>
+                        {% endif %}
+                      {% endif %}
+                      </small></p>          
+                  </div>
+              </div>
+          </div>
+          {% else %}
+          <div class="card mb-4">
+          <div class="col-mb-4">
+            <div class="card-body">
+                <h2 class="card-title">{{ post.title }}</h2>
+                <p class="card-text">{{post.snippet}}</p>
+                <a href="{% url 'post-detail' post.slug  %}" class="btn btn-primary">Read More &rarr;</a>
+              </div>
+              <div class="card-footer text-muted">
+                Posted on {{ post.created_on}} by 
+                <a href="{% url 'profile_page' post.author.profile.id %}">{{ post.author.first_name }} {{ post.author.last_name }}</a>
+                <span class="entry__meta-links">
+                  In <a href="{% url 'category' post.category %}">{{ post.category|title }}</a>
+                </span>
+              </div>
+              <p><small>
+                {% if user.is_authenticated %}
+                  {% if user.id == post.author.id %}
+                    <a href="{% url 'post-detail' post.slug  %}">Comments: {{post.comments.count}}</a>-
+                      <a href="{% url 'update_post' post.slug  %}">Edit   </a>
+                      <a href="{% url 'delete_post' post.slug  %}">Delete</a>
+                  {% endif %}
+                {% endif %}
+                </small></p>          
+            </div>
+          </div>
+          {% endif %}
+        {% endfor %}
+            
+    {% if is_paginated %}
+    <ul class="pagination justify-content-center mb-4">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="btn btn-outline-primary" href="?page={{ page_obj.previous_page_number }}" class="page-link">&larr; Newer</a>
+      </li>
+      {% endif %}
+      {% if page_obj.has_next %}
+      <li class="page-item disabled">
+        <a class="btn btn-outline-secondary" href="?page={{ page_obj.next_page_number }}" class="page-link">Older &rarr;</a>
+      </li>
+      {% endif %}
+    </ul>
+    {% endif %}
+
+  </div>
+  <!-- end blog entries -->
+ {% endblock %}
+ 
