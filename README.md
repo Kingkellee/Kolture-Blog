@@ -10,7 +10,7 @@ A simple Django Blogging App
     Comment system
     You can choose to either Publish Post as Featured Post, Normal Post or leave as Draft
     Sort post by category.
-    cdkeditor
+    ckeditor
   
 # Main Requirements
 
