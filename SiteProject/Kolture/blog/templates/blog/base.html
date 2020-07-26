@@ -44,8 +44,12 @@
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button">{{request.user.username}}</a>
                 <div class="dropdown-menu" aria-labelledby="dropdown10">
+                  {% if user.profile.id %}
                   <a class="dropdown-item" href="{% url 'profile_page' user.profile.id %}">Profile</a>
                   <a class="dropdown-item" href="{% url 'edit_profile_page' user.profile.id %}">Update Profile</a>
+                  {% else %}
+                  <a class="dropdown-item" href="{% url 'create_profile_page' %}">Create Profile</a>
+                  {% endif %}
                   <a class="dropdown-item" href="{% url 'edit_profile' %}">Settings</a>
                 </div>
               </li>
