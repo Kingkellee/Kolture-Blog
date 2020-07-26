@@ -100,13 +100,15 @@
 <hr>
 <!-- Comments Form -->
 <div class="card my-4">
-{% with post.comments.count as total_comments %}
-  {% endwith %}
+  {% with post.comments.count as total_comments %}
+  
   <div class="card-body">
-    <h5 class="card-header">Leave a Comment:</h5>
+    <h5 class="card-header">Leave a Comment: {{ total_comments }}-Comment{{total_comments|pluralize}}</h5>
     <a href="{% url 'add_comment' post.slug  %}">Join the Conversation</a>
   </div>
 </div> <!--end comment form-->
+{% endwith %}
+
 
   <!-- Single Comment -->
   {% for comment in post.comments.all %}
@@ -227,13 +229,13 @@
 <!-- Comments Form -->
 <div class="card my-4">
 {% with post.comments.count as total_comments %}
-  {% endwith %}
+  
   <div class="card-body">
-    <h5 class="card-header">Leave a Comment:</h5>
+    <h5 class="card-header">Leave a Comment: {{ total_comments }}-Comment{{total_comments|pluralize}}</h5>
     <a href="{% url 'add_comment' post.slug  %}">Join the Conversation</a>
   </div>
 </div> <!--end comment form-->
-
+{% endwith %}
   <!-- Single Comment -->
   {% for comment in post.comments.all %}
   <div class="media mb-4">
