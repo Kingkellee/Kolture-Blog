@@ -3,13 +3,12 @@
 
 
 {% block content %}
-{% if category_post %}
-
       <div class="col-md-8">
-        <h1 class="mt-4 font-italic border-bottom">
-            Posts in {{ cats }}
-        </h1>
-        {% for post in category_post %} 
+        <h4 class="mt-4 font-italic border-bottom">
+            Found {{found}} Post{{found|pluralize}} matching {{query}}
+        </h4>
+        <br>
+        {% for post in results %}
           {% if post.header_image %} 
           <div class="card mb-4">
               <div class="row no-gutters">
@@ -69,29 +68,24 @@
           </div>
           {% endif %}
         {% endfor %}
-            
     
     <ul class="pagination justify-content-center mb-4">
-      {% if category_post.has_previous %}
+      {% if results.has_previous %}
       <li class="page-item">
-        <a class="btn btn-outline-primary" href="?page={{ category_post.previous_page_number }}" class="page-link">&larr; Newer</a>
+        <a class="btn btn-outline-primary" href="?page={{ results.previous_page_number }}{% if query %}&q={{query}}{% endif %}" class="page-link">&larr; Previous</a>
       </li>
       {% endif %}
       <span class="current">
-        <li class="page-item"></li><a class="btn btn-outline-default" href="#">Page {{category_post.number}} of {{category_post.paginator.num_pages}}</a></li>
+        <li class="page-item"></li><a class="btn btn-outline-default" href="#">Page {{results.number}} of {{results.paginator.num_pages}}</a></li>
       </span>
-      {% if category_post.has_next %}
+      {% if results.has_next %}
       <li class="page-item disabled">
-        <a class="btn btn-outline-secondary" href="?page={{ category_post.next_page_number }}" class="page-link">Older &rarr;</a>
+        <a class="btn btn-outline-secondary" href="?page={{ results.next_page_number }}{% if query %} &q={{query}}{% endif %}" class="page-link">Next &rarr;</a>
       </li>
       {% endif %}
     </ul>
-    
+
   </div>
-{% else %}
-<div class="col-md-8">
-  Sorry this Category does not exist.
-</div>
-{% endif %}
+
 {% endblock %}
    

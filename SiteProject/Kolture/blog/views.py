@@ -6,6 +6,9 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
+from django.template.defaultfilters import slugify
+from taggit.models import Tag
+from django.db.models import Q
 
 
 def index (request):
@@ -30,9 +33,14 @@ class PostList(generic.ListView):
         cat_menu_list = cat_menu
         featured_post = Post.objects.filter(status=2).order_by('-created_on')[:2]
         context = super(PostList, self).get_context_data(*args, **kwargs)
+        common_tags = Post.tags.most_common()[:4]
+        
+       
         context["cat_menu"] = cat_menu
         context["featured_post"] = featured_post
         context["cat_menu_list"] = cat_menu_list
+        context["common_tags"] = common_tags
+        # context["form"] = form
         return context
 
 
@@ -62,7 +70,6 @@ def all_post(request):
 def about (request):
     return render (request, 'blog/about.html')
 
-
    
 def like_post(request, slug):
 
@@ -78,10 +85,6 @@ def like_post(request, slug):
         is_liked = True
     return HttpResponseRedirect(post.get_absolute_url())
    
-
-   
-    
-
 
 class PostDetail(generic.DetailView):
     model = Post
@@ -107,7 +110,19 @@ class PostDetail(generic.DetailView):
         context["featured"] = featured
         context["cat_menu_list"]=cat_menu_list
         return context
-      
+
+
+def tagged(request, slug):
+    tag = get_object_or_404(Tag, slug=slug)
+    tag_list = Tag.objects.all()
+    posts = Post.objects.filter(tags=tag)
+    context = {
+        'tag': tag,
+        'tag_list': tag_list,
+        'posts': posts,
+    }
+    return render(request, 'blog/tag_list.html', context)
+
     
 def add_comment(request, slug):
     post = get_object_or_404(Post, slug=slug)
@@ -181,6 +196,16 @@ class AddPostView(generic.CreateView):
         cat_menu_list = Category.objects.all()
         context["cat_menu_list"]=cat_menu_list
         return context
+
+
+    def form_valid(self, form):
+        newpost = form.save(commit=False)
+        newpost.slug = slugify(newpost.title)
+        newpost.save()
+        form.save_m2m()
+        return HttpResponseRedirect(reverse('blog-home'))
+
+
     
 
 def CategoryListView(request):
@@ -191,6 +216,7 @@ def CategoryListView(request):
 
 def CategoryView(request, cats):
     category_post = Post.objects.filter(category=cats.replace('-', ' '))
+    cat_menu_list = Category.objects.all()
     # object_list = Post.objects.filter(status=1).order_by('-created_on')
     paginator = Paginator(category_post, 3)
     page = request.GET.get('page')
@@ -205,7 +231,10 @@ def CategoryView(request, cats):
 
 
 
-    return render(request, 'blog/categories.html', {'cats': cats.title().replace('-', ' '),'category_post': category_post, 'page': page,})
+    return render(request, 'blog/categories.html', {'cats': cats.title().replace('-', ' '),
+                        'category_post': category_post, 
+                        'page': page, 
+                        'cat_menu_list':cat_menu_list,})
 
 
 class AddCategoryView(generic.CreateView):
@@ -248,4 +277,37 @@ class DeletePostView(generic.DeleteView):
         return context
     
 
+def search (request):
+    template_name = 'blog/search_results.html'
+    query = request.GET.get('q')
+    cat_menu_list = Category.objects.all()
+    if query:
+        results = Post.objects.filter(
+            Q(title__icontains = query) |
+            Q(content__icontains = query) 
+            ).distinct()
+        found = results.count()
+    else:
+        return HttpResponseRedirect(reverse('blog-home'))
+    # Post.objects.filter(Q(title_icontains = query) | Q(content_icontains = query) | Q(tags_icontains = query))
+    # object_list = Post.objects.filter(status=1).order_by('-created_on')
+    paginator = Paginator(results, 5)
+    page = request.GET.get('page')
+
+    try:
+        results = paginator.page(page)
+    except PageNotAnInteger:
+        results = paginator.page(1)
+
+    except EmptyPage:
+        results = paginator.page(paginator.num_pages)
     
+    context = {
+        'results': results, 
+        'page': page,
+        'query': query,
+        'cat_menu_list': cat_menu_list,
+        'found': found
+    }
+
+    return render(request, template_name, context)

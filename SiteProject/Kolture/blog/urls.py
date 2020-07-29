@@ -14,6 +14,7 @@ urlpatterns = [
     path('home/posts/', views.all_post, name='all-post'),
     path('home/add_post/', views.AddPostView.as_view(), name='add_post'),
     path('home/add_category/', views.AddCategoryView.as_view(), name='add_category'),
+    path('tag/<slug:slug>/', views.tagged, name="tagged"),
     path('home/<slug:slug>/', views.PostDetail.as_view(), name='post-detail'),
     path('like/<slug:slug>', views.like_post, name='like_post'),
     path('home/<slug:slug>/comment/', views.add_comment, name='add_comment'),
@@ -22,6 +23,7 @@ urlpatterns = [
     path('home/<slug:slug>/remove', views.DeletePostView.as_view(), name='delete_post'),
     path('home/category/<str:cats>/', views.CategoryView, name='category'),
     path('categorylist/', views.CategoryListView, name='category-list'),
+    path('home/search/results/', views.search, name='search'),
     
 
 ]

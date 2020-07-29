@@ -1,0 +1,47 @@
+{% extends "blog/base.html" %} 
+{% block content %}
+<div class="col-md-8">
+    <h1 class="mt-4 font-italic border-bottom">
+        Post in {{tag}}
+    </h1>
+    {% if tag_list %}
+        {% for post in posts %}
+      
+        <div class="card mb-4">
+            <div class="row no-gutters">
+                {% if post.header_image %} 
+              <div class="col-md-4">
+                <img src="{{ post.header_image.url }}" class="card-img img-responsive" height="250px">
+              </div>
+              {% endif %}
+              <div class="col-md-8">
+                <div class="card-body">
+                    <h2 class="card-title">{{ post.title }}</h2>
+                    <p class="card-text">{{post.snippet}}</p>
+                    <a href="{% url 'post-detail' post.slug  %}" class="btn btn-primary">Read More &rarr;</a>
+                  </div>
+                  <div class="card-footer text-muted">
+                    Posted on {{ post.created_on}} by 
+                    <a href="{% url 'profile_page' post.author.profile.id %}">{{ post.author.first_name }} {{ post.author.last_name }}</a>
+                    <span class="entry__meta-links">
+                      in <a href="{% url 'category' post.category %}"><button class="btn btn-primary btn-sm disabled">{{ post.category|title }}</button></a>
+                    </span>
+                  </div>
+                  <p><small>
+                    {% if user.is_authenticated %}
+                      {% if user.id == post.author.id %}
+                        <a href="{% url 'post-detail' post.slug  %}">Comments: {{post.comments.count}}</a>-
+                          <a href="{% url 'update_post' post.slug  %}">Edit   </a>
+                          <a href="{% url 'delete_post' post.slug  %}">Delete</a>
+                      {% endif %}
+                    {% endif %}
+                    </small></p>          
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+    
+
+</div>
+{% endblock %}

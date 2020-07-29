@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
 
 class Category(models.Model):
@@ -61,12 +62,12 @@ class Post (models.Model):
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
     created_on = models.DateTimeField(auto_now=True)
     status = models.IntegerField(choices=STATUS,default = 0)
+    tags = TaggableManager()
     
-
-
     
     class Meta:
         ordering = ['-created_on']
+     
         
     def total_likes(self):
         return self.likes.count()
@@ -78,8 +79,6 @@ class Post (models.Model):
 
     def get_absolute_url(self):
         return reverse("post-detail", kwargs={"slug":str(self.slug)})
-
-
 
 
 class Comment (models.Model):
