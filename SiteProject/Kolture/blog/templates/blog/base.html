@@ -181,22 +181,29 @@
             <div class="card-header" id="headingOne">
               <h2 class="mb-0">
                 <button class="btn btn-primary text-left" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                  Archive
+                  Archives
                 </button>
               </h2>
             </div>
         
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
               <div class="card-body">
+                  {% regroup all_posts by created_on.year as year_list %}
                   <ul class="navbar-nav ml-auto">
+                      {% for year in year_list %}
                       <li class="nav-item active">
-                          <a class="dropdown-item" href="#">January</a>
+                          {{ year.grouper }}
+                            {% regroup year.list by created_on.month as month_list %}
+                            <ul class="navbar-nav ml-auto">
+                              {% for month in month_list %}
+                              <li class="nav-item active">
+                                <a class="dropdown-item" style="color: red; font-weight: 600;" href="{% url 'post_archive_month' year.grouper month.grouper %}">{{ month.list.0.created_on|date:'b' }} ({{ month.list|length }})</a>
+                              </li>
+                              {% endfor %} 
+                            </ul>
                       </li>
-                      <li class="nav-item active">
-                          <a class="dropdown-item" href="#">February</a>
-                      </li>  
+                      {% endfor %}
                   </ul>
-
               </div>
             </div>
           </div>

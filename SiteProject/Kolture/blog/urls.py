@@ -24,6 +24,9 @@ urlpatterns = [
     path('home/category/<str:cats>/', views.CategoryView, name='category'),
     path('categorylist/', views.CategoryListView, name='category-list'),
     path('home/search/results/', views.search, name='search'),
+    path('<int:year>/<int:month>/',
+         views.ArticleMonthArchiveView.as_view(month_format='%m'),
+         name="post_archive_month"),
     
 
 ]

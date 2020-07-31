@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import slugify
 from taggit.models import Tag
 from django.db.models import Q
+from django.views.generic.dates import MonthArchiveView
 
 
 def index (request):
@@ -36,6 +37,32 @@ class PostList(generic.ListView):
         common_tags = Post.tags.most_common()[:4]
         
        
+        context["cat_menu"] = cat_menu
+        context["featured_post"] = featured_post
+        context["cat_menu_list"] = cat_menu_list
+        context["common_tags"] = common_tags
+        # context["form"] = form
+        return context
+
+
+class ArticleMonthArchiveView(MonthArchiveView):
+    queryset = Post.objects.all()
+    date_field = "created_on"
+    allow_future = True
+    # posts = Post.objects.filter(status=1).order_by('-created_on')
+    # featured_post = Post.objects.filter(status=2).order_by('-created_on')[:3]
+    template_name = 'blog/post_archive_month.html'
+    paginate_by = 5
+
+    def get_context_data(self, *args, **kwargs):
+        posts = Post.objects.filter(status=1).order_by('-created_on')
+        cat_menu = Category.objects.all()
+        cat_menu_list = cat_menu
+        featured_post = Post.objects.filter(status=2).order_by('-created_on')[:2]
+        context = super(ArticleMonthArchiveView, self).get_context_data(*args, **kwargs)
+        common_tags = Post.tags.most_common()[:4]
+        
+        context["posts"] = posts
         context["cat_menu"] = cat_menu
         context["featured_post"] = featured_post
         context["cat_menu_list"] = cat_menu_list
